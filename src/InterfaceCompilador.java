@@ -15,41 +15,36 @@ public class InterfaceCompilador extends JFrame {
 
         FlowLayout layoutSemEspaco = new FlowLayout(FlowLayout.LEFT, 0, 0);
         JPanel barraFerramentas = new JPanel(layoutSemEspaco);
-        // JPanel barraFerramentas = new JPanel(new FlowLayout(FlowLayout.LEFT));
         barraFerramentas.setPreferredSize(new Dimension(1500, 70));
         barraFerramentas.setBackground(Color.LIGHT_GRAY);
 
-        String[] nomesArquivos = { "novo", "open", "save", "files", "paste", "cutting", "compile", "partners" };
+        String[] nomesArquivos = { "new", "open", "save", "copy", "paste", "cutting", "compile", "equipe" };
         String[] labels = { "Novo [ctrl-n]", "Abrir [ctrl-o]", "Salvar [ctrl-s]", "Copiar [ctrl-c]",
                 "Colar [ctrl-v]", "Recortar [ctrl-x]", "Compilar [F7]", "Equipe [F1]" };
 
-        for (int i = 0; i < labels.length; i++) {
-            String path = "src/icons/" + nomesArquivos[i] + ".png";
-
-            ImageIcon icone = new ImageIcon(path);
-
-            
-            if (icone.getImageLoadStatus() != MediaTracker.COMPLETE) {
-                System.err.println("ERRO: Não foi possível encontrar o ícone em: " + path);
-                // Se falhar com "src/icons/", tente carregar apenas com "icons/"
-                icone = new ImageIcon("icons/" + nomesArquivos[i] + ".png");
-            }
-
-            JButton btn = new JButton(labels[i], icone);
-
-            // Estética idêntica à Figura 1
-            btn.setPreferredSize(new Dimension(110, 70));
-            btn.setMargin(new Insets(0, 0, 0, 0));
-            btn.setFocusable(false);
-            btn.setVerticalTextPosition(SwingConstants.BOTTOM);
-            btn.setHorizontalTextPosition(SwingConstants.CENTER);
-            btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-
-            // Ajuste de fonte para o texto caber (opcional)
-            btn.setFont(new Font("calibri", Font.PLAIN, 10));
-
-            barraFerramentas.add(btn);
+       for (int i = 0; i < labels.length; i++) {
+    java.net.URL imgURL = getClass().getResource("/icons/" + nomesArquivos[i] + ".png");
+    
+    ImageIcon icone;
+    if (imgURL != null) {
+        icone = new ImageIcon(imgURL);
+    } else {
+        System.err.println("ERRO: Recurso não encontrado: /icons/" + nomesArquivos[i] + ".png");
+        icone = new ImageIcon(); 
         }
+
+    JButton btn = new JButton(labels[i], icone);
+    
+    btn.setPreferredSize(new Dimension(110, 70));
+    btn.setMargin(new Insets(0, 0, 0, 0));
+    btn.setFocusable(false);
+    btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+    btn.setHorizontalTextPosition(SwingConstants.CENTER);
+    btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+    //btn.setFont(new Font("Arial", Font.PLAIN, 10));
+
+    barraFerramentas.add(btn);
+}
 
         add(barraFerramentas, BorderLayout.NORTH);
 
@@ -91,4 +86,44 @@ public class InterfaceCompilador extends JFrame {
             numLinhas.setText(sb.toString());
         });
     }
+
+
+  private void processarComando(String comando) {
+        if (comando.equals("equipe")) {
+            exibirEquipe();
+        } else if (comando.equals("compile")) {
+            JOptionPane.showMessageDialog(this, "Compilando o código...");
+        } else {
+            System.out.println("Botão pressionado: " + comando);
+        }
+    }
+
+    private void exibirEquipe() {
+        JOptionPane.showMessageDialog(this, 
+            "Equipe:\n- Karina 1\n- Yuri", 
+            "Equipe [F1]", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // MÉTODO PARA ATALHOS F1 E F7
+    private void configurarAtalhos() {
+        // F1 - Equipe
+        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke("F1"), "equipeAction");
+        this.getRootPane().getActionMap().put("equipeAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { exibirEquipe(); }
+        });
+
+        // F7 - Compilar
+        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke("F7"), "compileAction");
+        this.getRootPane().getActionMap().put("compileAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { 
+                processarComando("compile"); 
+            }
+        });
+    }
+
 }

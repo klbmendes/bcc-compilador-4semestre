@@ -19,6 +19,5 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 
 
-Icons utilizados do fonts google - http://fonts.google.com/
-
+Icons retirados do https://www.flaticon.com/
 
