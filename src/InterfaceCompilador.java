@@ -1,9 +1,15 @@
 import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
 public class InterfaceCompilador extends JFrame {
+
+    private JTextArea editor;
+    private JTextArea mensagens;
     private JLabel labelStatus;
+    private File arquivoAtual = null;
 
     public InterfaceCompilador() {
         setTitle("Compilador");
@@ -13,71 +19,71 @@ public class InterfaceCompilador extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        FlowLayout layoutSemEspaco = new FlowLayout(FlowLayout.LEFT, 0, 0);
-        JPanel barraFerramentas = new JPanel(layoutSemEspaco);
+        // ── Barra de ferramentas ──────────────────────────────────────────────
+        JPanel barraFerramentas = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         barraFerramentas.setPreferredSize(new Dimension(1500, 70));
         barraFerramentas.setBackground(Color.LIGHT_GRAY);
 
-        String[] nomesArquivos = { "new", "open", "save", "copy", "paste", "cutting", "compile", "equipe" };
-        String[] labels = { "Novo [ctrl-n]", "Abrir [ctrl-o]", "Salvar [ctrl-s]", "Copiar [ctrl-c]",
-                "Colar [ctrl-v]", "Recortar [ctrl-x]", "Compilar [F7]", "Equipe [F1]" };
+        String[] arquivos = { "new", "open", "save", "copy", "paste", "cutting", "compile", "equipe" };
+        String[] labels   = { "Novo [ctrl-n]", "Abrir [ctrl-o]", "Salvar [ctrl-s]",
+                              "Copiar [ctrl-c]", "Colar [ctrl-v]", "Recortar [ctrl-x]",
+                              "Compilar [F7]", "Equipe [F1]" };
 
-       for (int i = 0; i < labels.length; i++) {
-    java.net.URL imgURL = getClass().getResource("/icons/" + nomesArquivos[i] + ".png");
-    
-    ImageIcon icone;
-    if (imgURL != null) {
-        icone = new ImageIcon(imgURL);
-    } else {
-        System.err.println("ERRO: Recurso não encontrado: /icons/" + nomesArquivos[i] + ".png");
-        icone = new ImageIcon(); 
+        JButton[] botoes = new JButton[labels.length];
+        for (int i = 0; i < labels.length; i++) {
+            java.net.URL imgURL = getClass().getResource("/icons/" + arquivos[i] + ".png");
+            ImageIcon icone = (imgURL != null) ? new ImageIcon(imgURL) : new ImageIcon();
+
+            JButton btn = new JButton(labels[i], icone);
+            btn.setPreferredSize(new Dimension(110, 70));
+            btn.setMargin(new Insets(0, 0, 0, 0));
+            btn.setFocusable(false);
+            btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+            btn.setHorizontalTextPosition(SwingConstants.CENTER);
+            btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+            barraFerramentas.add(btn);
+            botoes[i] = btn;
         }
-
-    JButton btn = new JButton(labels[i], icone);
-    
-    btn.setPreferredSize(new Dimension(110, 70));
-    btn.setMargin(new Insets(0, 0, 0, 0));
-    btn.setFocusable(false);
-    btn.setVerticalTextPosition(SwingConstants.BOTTOM);
-    btn.setHorizontalTextPosition(SwingConstants.CENTER);
-    btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-    //btn.setFont(new Font("Arial", Font.PLAIN, 10));
-
-    barraFerramentas.add(btn);
-}
-
         add(barraFerramentas, BorderLayout.NORTH);
 
-        JTextArea editor = new JTextArea();
-        JTextArea numLinhas = new JTextArea("1  ");
+        // ── Editor ────────────────────────────────────────────────────────────
+        editor = new JTextArea();
+
+        JTextArea numLinhas = new JTextArea("1");
         numLinhas.setBackground(new Color(230, 230, 230));
         numLinhas.setEditable(false);
         numLinhas.setFocusable(false);
 
-        JScrollPane scrollEditor = new JScrollPane(editor, 22, 32);
+        JScrollPane scrollEditor = new JScrollPane(editor,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollEditor.setRowHeaderView(numLinhas);
 
-        JTextArea mensagens = new JTextArea();
+        // ── Área de mensagens ─────────────────────────────────────────────────
+        mensagens = new JTextArea();
         mensagens.setEditable(false);
-        JScrollPane scrollMensagens = new JScrollPane(mensagens, 22, 32);
+        JScrollPane scrollMensagens = new JScrollPane(mensagens,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
+        // ── Divisor ───────────────────────────────────────────────────────────
         JSplitPane divisor = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollEditor, scrollMensagens);
         divisor.setDividerLocation(500);
         divisor.setOneTouchExpandable(true);
         add(divisor, BorderLayout.CENTER);
 
-        JPanel painelInferior = new JPanel(new BorderLayout());
-
+        // ── Barra de status ───────────────────────────────────────────────────
         JPanel barraStatus = new JPanel(new FlowLayout(FlowLayout.LEFT));
         barraStatus.setPreferredSize(new Dimension(1500, 25));
         barraStatus.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-
-        labelStatus = new JLabel("pasta\\nome do arquivo");
+        labelStatus = new JLabel("");
         barraStatus.add(labelStatus);
 
+        JPanel painelInferior = new JPanel(new BorderLayout());
         painelInferior.add(barraStatus, BorderLayout.SOUTH);
         add(painelInferior, BorderLayout.SOUTH);
 
+        // ── Numeração de linhas ───────────────────────────────────────────────
         editor.addCaretListener(e -> {
             int total = Math.max(1, editor.getLineCount());
             StringBuilder sb = new StringBuilder();
@@ -85,8 +91,127 @@ public class InterfaceCompilador extends JFrame {
                 sb.append(i).append("\n");
             numLinhas.setText(sb.toString());
         });
+
+        // ── ActionListeners dos botões ────────────────────────────────────────
+        botoes[0].addActionListener(e -> acaoNovo());       // Novo
+        botoes[1].addActionListener(e -> acaoAbrir());      // Abrir
+        botoes[2].addActionListener(e -> acaoSalvar());     // Salvar
+        botoes[3].addActionListener(e -> editor.copy());    // Copiar
+        botoes[4].addActionListener(e -> editor.paste());   // Colar
+        botoes[5].addActionListener(e -> editor.cut());     // Recortar
+        botoes[6].addActionListener(e -> acaoCompilar());   // Compilar
+        botoes[7].addActionListener(e -> acaoEquipe());     // Equipe
+
+        // ── Atalhos de teclado ────────────────────────────────────────────────
+        configurarAtalhos();
     }
 
+    // ── Ações ─────────────────────────────────────────────────────────────────
 
-  
+    private void acaoNovo() {
+        editor.setText("");
+        mensagens.setText("");
+        labelStatus.setText("");
+        arquivoAtual = null;
+    }
+
+    private void acaoAbrir() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(
+            new javax.swing.filechooser.FileNameExtensionFilter("Arquivos de texto (*.txt)", "txt"));
+
+        int resultado = chooser.showOpenDialog(this);
+        if (resultado != JFileChooser.APPROVE_OPTION) return; // mantém estado anterior
+
+        File arquivo = chooser.getSelectedFile();
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
+            editor.read(br, null);
+            mensagens.setText("");
+            arquivoAtual = arquivo;
+            labelStatus.setText(arquivo.getAbsolutePath());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao abrir arquivo: " + ex.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void acaoSalvar() {
+        if (arquivoAtual == null) {
+            // Arquivo novo — pede local e nome
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(
+                new javax.swing.filechooser.FileNameExtensionFilter("Arquivos de texto (*.txt)", "txt"));
+
+            int resultado = chooser.showSaveDialog(this);
+            if (resultado != JFileChooser.APPROVE_OPTION) return;
+
+            File arquivo = chooser.getSelectedFile();
+            if (!arquivo.getName().toLowerCase().endsWith(".txt"))
+                arquivo = new File(arquivo.getAbsolutePath() + ".txt");
+
+            if (gravarArquivo(arquivo)) {
+                arquivoAtual = arquivo;
+                mensagens.setText("");
+                labelStatus.setText(arquivo.getAbsolutePath());
+            }
+        } else {
+            // Arquivo existente — salva direto, mantém status
+            if (gravarArquivo(arquivoAtual)) {
+                mensagens.setText("");
+            }
+        }
+    }
+
+    private boolean gravarArquivo(File arquivo) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivo))) {
+            editor.write(bw);
+            return true;
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar arquivo: " + ex.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    private void acaoCompilar() {
+        mensagens.setText("compilação de programas ainda não foi implementada");
+    }
+
+    private void acaoEquipe() {
+        mensagens.setText("Equipe:\n- Karina\n- Yuri");
+    }
+
+    // ── Atalhos de teclado ────────────────────────────────────────────────────
+
+    private void configurarAtalhos() {
+        InputMap im = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getRootPane().getActionMap();
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), "novo");
+        am.put("novo", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) { acaoNovo(); }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK), "abrir");
+        am.put("abrir", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) { acaoAbrir(); }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK), "salvar");
+        am.put("salvar", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) { acaoSalvar(); }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0), "compilar");
+        am.put("compilar", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) { acaoCompilar(); }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "equipe");
+        am.put("equipe", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) { acaoEquipe(); }
+        });
+
+        // Ctrl+C / Ctrl+V / Ctrl+X são tratados nativamente pelo JTextArea
+    }
 }
