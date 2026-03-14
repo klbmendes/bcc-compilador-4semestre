@@ -19,7 +19,7 @@ public class InterfaceCompilador extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // ── Barra de ferramentas ──────────────────────────────────────────────
+        //  Barra de ferramentas 
         JPanel barraFerramentas = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         barraFerramentas.setPreferredSize(new Dimension(1500, 70));
         barraFerramentas.setBackground(Color.LIGHT_GRAY);
@@ -46,7 +46,7 @@ public class InterfaceCompilador extends JFrame {
         }
         add(barraFerramentas, BorderLayout.NORTH);
 
-        // ── Editor ────────────────────────────────────────────────────────────
+        //  Editor 
         editor = new JTextArea();
 
         JTextArea numLinhas = new JTextArea("1");
@@ -59,20 +59,20 @@ public class InterfaceCompilador extends JFrame {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollEditor.setRowHeaderView(numLinhas);
 
-        // ── Área de mensagens ─────────────────────────────────────────────────
+        //  Área de mensagens 
         mensagens = new JTextArea();
         mensagens.setEditable(false);
         JScrollPane scrollMensagens = new JScrollPane(mensagens,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-        // ── Divisor ───────────────────────────────────────────────────────────
+        //  Divisor 
         JSplitPane divisor = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollEditor, scrollMensagens);
         divisor.setDividerLocation(500);
         divisor.setOneTouchExpandable(true);
         add(divisor, BorderLayout.CENTER);
 
-        // ── Barra de status ───────────────────────────────────────────────────
+        //  Barra de status 
         JPanel barraStatus = new JPanel(new FlowLayout(FlowLayout.LEFT));
         barraStatus.setPreferredSize(new Dimension(1500, 25));
         barraStatus.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
@@ -83,7 +83,7 @@ public class InterfaceCompilador extends JFrame {
         painelInferior.add(barraStatus, BorderLayout.SOUTH);
         add(painelInferior, BorderLayout.SOUTH);
 
-        // ── Numeração de linhas ───────────────────────────────────────────────
+        //  Numeração de linhas
         editor.addCaretListener(e -> {
             int total = Math.max(1, editor.getLineCount());
             StringBuilder sb = new StringBuilder();
@@ -92,7 +92,7 @@ public class InterfaceCompilador extends JFrame {
             numLinhas.setText(sb.toString());
         });
 
-        // ── ActionListeners dos botões ────────────────────────────────────────
+        //  ActionListeners dos botões 
         botoes[0].addActionListener(e -> acaoNovo());       // Novo
         botoes[1].addActionListener(e -> acaoAbrir());      // Abrir
         botoes[2].addActionListener(e -> acaoSalvar());     // Salvar
@@ -101,13 +101,11 @@ public class InterfaceCompilador extends JFrame {
         botoes[5].addActionListener(e -> editor.cut());     // Recortar
         botoes[6].addActionListener(e -> acaoCompilar());   // Compilar
         botoes[7].addActionListener(e -> acaoEquipe());     // Equipe
-
-        // ── Atalhos de teclado ────────────────────────────────────────────────
+ 
         configurarAtalhos();
     }
 
-    // ── Ações ─────────────────────────────────────────────────────────────────
-
+    //  Ações 
     private void acaoNovo() {
         editor.setText("");
         mensagens.setText("");
@@ -174,15 +172,14 @@ public class InterfaceCompilador extends JFrame {
     }
 
     private void acaoCompilar() {
-        mensagens.setText("compilação de programas ainda não foi implementada");
+        mensagens.setText("A compilação de programas ainda não foi implementada");
     }
 
     private void acaoEquipe() {
-        mensagens.setText("Equipe:\n- Karina\n- Yuri");
+        mensagens.setText("Equipe:\n- Karina Luiza Becker Mendes\n- Yuri Ricardo Pacher Rabelo");
     }
 
-    // ── Atalhos de teclado ────────────────────────────────────────────────────
-
+    // Atalhos de teclado = Ctrl+C / Ctrl+V / Ctrl+X são tratados nativamente pelo JTextArea
     private void configurarAtalhos() {
         InputMap im = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getRootPane().getActionMap();
@@ -211,7 +208,5 @@ public class InterfaceCompilador extends JFrame {
         am.put("equipe", new AbstractAction() {
             public void actionPerformed(ActionEvent e) { acaoEquipe(); }
         });
-
-        // Ctrl+C / Ctrl+V / Ctrl+X são tratados nativamente pelo JTextArea
     }
 }
