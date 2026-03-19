@@ -1,0 +1,66 @@
+// Definições Regulares
+min: [a-z]
+dig: [0-9]
+charaux: n|s|t
+linha:! #[^n]*
+bloco:! \{ \n [^\{\}]* \n \}
+
+// Tokens
+id:! {min} ( {min}|_{dig}+)*
+cte_int:! {dig}+
+cte_float:! {dig}+\.{dig}+
+cte_char:! \\{charaux}
+cte_string:! \" ([^\n\"\\%] | %x)* \"
+
+
+// Palavras Reservadas
+
+pr_ask = id:"ask"
+pr_bool = id:"bool"
+pr_char = id:"char"
+pr_define = id:"define"
+pr_end = id:"end"
+pr_elif = id:"elif"
+pr_else = id:"else"
+pr_false = id:"false"
+pr_float = id:"float"
+pr_if = id:"if"
+pr_int = id:"int"
+pr_main = id:"main"
+pr_repeat = id:"repeat"
+pr_string = id:"string"
+pr_tell = id:"tell"
+pr_true = id:"true"
+pr_until = id:"until"
+pr_while = id:"while"
+
+
+// Simbolos Especiais
+":"
+";"
+","
+"="
+"<-"
+"("
+")"
+"&&"
+"||"
+"!"
+"=="
+"!="
+"<"
+"<="
+">"
+">="
+"+"
+"-"
+"*"
+"/"
+"^"
+
+// Caracteres de Formatação
+:[\s\n\t]
+
+// Comentários
+:! {linha}
+:! {bloco}
