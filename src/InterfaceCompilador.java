@@ -4,6 +4,10 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
+import pcklexico.Lexico;
+import pcklexico.Token;
+import pcklexico.LexicalError;
+
 public class InterfaceCompilador extends JFrame {
 
     private JTextArea editor;
@@ -171,10 +175,6 @@ public class InterfaceCompilador extends JFrame {
         }
     }
 
-    private void acaoCompilar() {
-        mensagens.setText("A compilação de programas ainda não foi implementada");
-    }
-
     private void acaoEquipe() {
         mensagens.setText("Equipe:\n- Karina Luiza Becker Mendes\n- Yuri Ricardo Pacher Rabelo");
     }
@@ -208,5 +208,101 @@ public class InterfaceCompilador extends JFrame {
         am.put("equipe", new AbstractAction() {
             public void actionPerformed(ActionEvent e) { acaoEquipe(); }
         });
+    }
+
+   private int posicaoParaLinha(String texto, int posicao) {
+        int linha = 1;
+        for (int i = 0; i < posicao && i < texto.length(); i++) {
+            if (texto.charAt(i) == '\n') {
+                linha++;
+            }
+        }
+        return linha;
+    }
+
+    private String classeDoToken(int id) {
+        switch (id) {
+            case 2:  return "identificador";
+            case 3:  return "constante_int";
+            case 4:  return "constante_float";
+            case 5:  return "constante_char";
+            case 6:  return "constante_string";
+            // Palavras reservadas (7 a 24)
+            case 7:  case 8:  case 9:  case 10: case 11:
+            case 12: case 13: case 14: case 15: case 16:
+            case 17: case 18: case 19: case 20: case 21:
+            case 22: case 23: case 24:
+                return "palavra reservada";
+            // Símbolos especiais (25 a 45)
+            default:
+                if (id >= 25 && id <= 45)
+                    return "símbolo especial";
+                return "desconhecido";
+        }
+    }
+    private String formatarErro(String msgGals, int linha, String simbolo) {
+        String msg = msgGals.toLowerCase().trim();
+
+        if (msg.startsWith("simbolo invalido")) {
+            // Exibe o símbolo inválido junto com a mensagem: "linha X: @ símbolo inválido"
+            return "linha " + linha + ": " + simbolo + " símbolo inválido";
+        } else if (msg.startsWith("identificador invalido")) {
+            return "linha " + linha + ": identificador inválido";
+        } else if (msg.startsWith("constante_float invalida")) {
+            return "linha " + linha + ": constante_float inválida";
+        } else if (msg.startsWith("constante_char invalida")) {
+            return "linha " + linha + ": constante_char inválida";
+        } else if (msg.startsWith("constante_string invalida")) {
+            return "linha " + linha + ": constante_string inválida";
+        } else if (msg.startsWith("comentario invalido") || msg.startsWith("comentário invalido")) {
+            return "linha " + linha + ": comentário inválido ou não finalizado";
+        } else {
+            return "linha " + linha + ": " + simbolo + " símbolo inválido";
+        }
+    }
+
+    private void acaoCompilar() {
+        mensagens.setText("");
+
+        String fonte = editor.getText();
+
+        Lexico lexico = new Lexico(fonte);
+
+        StringBuilder saida = new StringBuilder();
+
+        try {
+            Token token;
+            while ((token = lexico.nextToken()) != null) {
+                int linha   = posicaoParaLinha(fonte, token.getPosition());
+                String classe = classeDoToken(token.getId());
+                String lexema = token.getLexeme();
+
+                saida.append("linha ")
+                     .append(linha)
+                     .append(": ")
+                     .append(classe)
+                     .append(" ")
+                     .append(lexema)
+                     .append("\n");
+            }
+
+            saida.append("programa compilado com sucesso");
+            mensagens.setText(saida.toString());
+
+        } catch (LexicalError e) {
+            int posErro = e.getPosition();
+            int linhaErro = posicaoParaLinha(fonte, posErro);
+
+          
+            String simbolo = "";
+            if (posErro >= 0 && posErro < fonte.length()) {
+                simbolo = String.valueOf(fonte.charAt(posErro));
+            } else if (posErro > 0 && posErro - 1 < fonte.length()) {
+                simbolo = String.valueOf(fonte.charAt(posErro - 1));
+            }
+
+            String msgFormatada = formatarErro(e.getMessage(), linhaErro, simbolo);
+            mensagens.setText(msgFormatada);
+        }
     }
 }

@@ -1,3 +1,5 @@
+package pcklexico;
+
 public interface ScannerConstants
 {
     int[] SCANNER_TABLE_INDEXES = 

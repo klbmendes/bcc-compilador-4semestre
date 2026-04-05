@@ -1,5 +1,6 @@
-public class AnalysisError extends Exception
-{
+package pcklexico;
+
+public class AnalysisError extends Exception {
     private int position;
 
     public AnalysisError(String msg, int position)

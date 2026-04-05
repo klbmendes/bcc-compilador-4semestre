@@ -1,4 +1,5 @@
-package Lexico;
+package pcklexico;
+
 public class Token
 {
     private int id;
