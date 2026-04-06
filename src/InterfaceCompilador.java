@@ -5,8 +5,10 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
 import pcklexico.Lexico;
+import pcklexico.Constants;
 import pcklexico.Token;
 import pcklexico.LexicalError;
+
 
 public class InterfaceCompilador extends JFrame {
 
@@ -220,26 +222,29 @@ public class InterfaceCompilador extends JFrame {
         return linha;
     }
 
-    private String classeDoToken(int id) {
-        switch (id) {
-            case 2:  return "identificador";
-            case 3:  return "constante_int";
-            case 4:  return "constante_float";
-            case 5:  return "constante_char";
-            case 6:  return "constante_string";
-            // Palavras reservadas (7 a 24)
-            case 7:  case 8:  case 9:  case 10: case 11:
-            case 12: case 13: case 14: case 15: case 16:
-            case 17: case 18: case 19: case 20: case 21:
-            case 22: case 23: case 24:
-                return "palavra reservada";
-            // Símbolos especiais (25 a 45)
-            default:
-                if (id >= 25 && id <= 45)
-                    return "símbolo especial";
-                return "desconhecido";
-        }
-    }
+   private String classeDoToken(int id) {
+    if (id == Constants.t_id)          return "identificador";
+    if (id == Constants.t_cte_int)     return "constante_int";
+    if (id == Constants.t_cte_float)   return "constante_float";
+    if (id == Constants.t_cte_char)    return "constante_char";
+    if (id == Constants.t_cte_string)  return "constante_string";
+
+    if (id == Constants.t_pr_ask    || id == Constants.t_pr_bool   ||
+        id == Constants.t_pr_char   || id == Constants.t_pr_define ||
+        id == Constants.t_pr_end    || id == Constants.t_pr_elif   ||
+        id == Constants.t_pr_else   || id == Constants.t_pr_false  ||
+        id == Constants.t_pr_float  || id == Constants.t_pr_if     ||
+        id == Constants.t_pr_int    || id == Constants.t_pr_main   ||
+        id == Constants.t_pr_repeat || id == Constants.t_pr_string ||
+        id == Constants.t_pr_tell   || id == Constants.t_pr_true   ||
+        id == Constants.t_pr_until  || id == Constants.t_pr_while)
+        return "palavra reservada";
+
+    if (id >= Constants.t_TOKEN_25 && id <= Constants.t_TOKEN_45)
+        return "símbolo especial";
+
+    return "desconhecido";
+}
     private String formatarErro(String msgGals, int linha, String simbolo) {
         String msg = msgGals.toLowerCase().trim();
 
@@ -261,51 +266,47 @@ public class InterfaceCompilador extends JFrame {
     }
 
     private void acaoCompilar() {
-        mensagens.setText("");
+    mensagens.setText("");
 
-        String fonte = editor.getText();
+    String fonte = editor.getText();
+    Lexico lexico = new Lexico(fonte);
+    StringBuilder saida = new StringBuilder();
 
-        Lexico lexico = new Lexico(fonte);
+    try {
+        Token token;
+        boolean temTokens = false;
 
-        StringBuilder saida = new StringBuilder();
+        saida.append(String.format("%-8s %-25s %s%n", "linha", "classe", "lexema"));
 
-        try {
-            Token token;
-            while ((token = lexico.nextToken()) != null) {
-                int linha   = posicaoParaLinha(fonte, token.getPosition());
-                String classe = classeDoToken(token.getId());
-                String lexema = token.getLexeme();
+        while ((token = lexico.nextToken()) != null) {
+            int linha     = posicaoParaLinha(fonte, token.getPosition());
+            String classe = classeDoToken(token.getId());
+            String lexema = token.getLexeme();
 
- /* saida.append("linha ")
-                     .append(linha)
-                     .append(": ")
-                     .append(classe)
-                     .append(" ")
-                     .append(lexema)
-                     .append("\n");*/      
-                     
-                     saida.append("linha ").append(linha).append(":\t")
-     .append(classe).append("\t")
-     .append(lexema).append("\n");
-            }
-
-            saida.append("programa compilado com sucesso");
-            mensagens.setText(saida.toString());
-
-        } catch (LexicalError e) {
-            int posErro = e.getPosition();
-            int linhaErro = posicaoParaLinha(fonte, posErro);
-
-          
-            String simbolo = "";
-            if (posErro >= 0 && posErro < fonte.length()) {
-                simbolo = String.valueOf(fonte.charAt(posErro));
-            } else if (posErro > 0 && posErro - 1 < fonte.length()) {
-                simbolo = String.valueOf(fonte.charAt(posErro - 1));
-            }
-
-            String msgFormatada = formatarErro(e.getMessage(), linhaErro, simbolo);
-            mensagens.setText(msgFormatada);
+            saida.append(String.format("%-8s %-25s %s%n", linha, classe, lexema));
+            temTokens = true;
         }
+
+        if (temTokens) saida.append("\n");
+        saida.append("programa compilado com sucesso");
+        mensagens.setText(saida.toString());
+        mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
+
+    } 
+        catch (LexicalError e) {
+    int posErro = e.getPosition();
+    int linhaErro = posicaoParaLinha(fonte, posErro);
+
+    String simbolo = "";
+    if (posErro > 0 && posErro - 1 < fonte.length()) {
+        simbolo = String.valueOf(fonte.charAt(posErro - 1));
+    } else if (posErro >= 0 && posErro < fonte.length()) {
+        simbolo = String.valueOf(fonte.charAt(posErro));
     }
+
+    String msgFormatada = formatarErro(e.getMessage(), linhaErro, simbolo);
+    mensagens.setText(msgFormatada);
+    mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
+    }
+}
 }
