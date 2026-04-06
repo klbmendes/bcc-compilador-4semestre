@@ -244,7 +244,6 @@ public class InterfaceCompilador extends JFrame {
         String msg = msgGals.toLowerCase().trim();
 
         if (msg.startsWith("simbolo invalido")) {
-            // Exibe o símbolo inválido junto com a mensagem: "linha X: @ símbolo inválido"
             return "linha " + linha + ": " + simbolo + " símbolo inválido";
         } else if (msg.startsWith("identificador invalido")) {
             return "linha " + linha + ": identificador inválido";
@@ -277,13 +276,17 @@ public class InterfaceCompilador extends JFrame {
                 String classe = classeDoToken(token.getId());
                 String lexema = token.getLexeme();
 
-                saida.append("linha ")
+ /* saida.append("linha ")
                      .append(linha)
                      .append(": ")
                      .append(classe)
                      .append(" ")
                      .append(lexema)
-                     .append("\n");
+                     .append("\n");*/      
+                     
+                     saida.append("linha ").append(linha).append(":\t")
+     .append(classe).append("\t")
+     .append(lexema).append("\n");
             }
 
             saida.append("programa compilado com sucesso");
