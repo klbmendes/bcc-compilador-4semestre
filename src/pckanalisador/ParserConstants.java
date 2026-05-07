@@ -1,3 +1,5 @@
+package pckanalisador;
+
 public interface ParserConstants
 {
     int START_SYMBOL = 46;

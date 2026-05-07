@@ -4,10 +4,13 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
-import pcklexico.Lexico;
-import pcklexico.Constants;
-import pcklexico.Token;
-import pcklexico.LexicalError;
+import pckanalisador.Lexico;
+import pckanalisador.Constants;
+import pckanalisador.Token;
+import pckanalisador.LexicalError;
+import pckanalisador.Sintatico;
+import pckanalisador.Semantico; 
+
 
 
 public class InterfaceCompilador extends JFrame {
