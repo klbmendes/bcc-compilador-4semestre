@@ -1,3 +1,5 @@
+package pckanalisador;
+
 public class Lexico implements Constants
 {
     private int position;

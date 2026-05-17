@@ -1,3 +1,5 @@
+package pckanalisador;
+
 public class Token
 {
     private int id;
