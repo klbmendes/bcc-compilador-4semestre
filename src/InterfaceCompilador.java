@@ -3,15 +3,14 @@ import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-
+import pckanalisador.Constants;
+import pckanalisador.LexicalError;
 import pckanalisador.Lexico;
 import pckanalisador.SemanticError;
-import pckanalisador.Constants;
-import pckanalisador.Token;
-import pckanalisador.LexicalError;
+import pckanalisador.Semantico;
 import pckanalisador.Sintatico;
 import pckanalisador.SyntaticError;
-import pckanalisador.Semantico;
+import pckanalisador.Token;
 
 public class InterfaceCompilador extends JFrame {
 
@@ -283,6 +282,7 @@ public class InterfaceCompilador extends JFrame {
             String encontrado = encontrarTokenEncontrado(fonte, posErro);
             mensagens.setText("linha " + linhaErro + ": encontrado " + encontrado + " " + e.getMessage());
             mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
+//encontrado ... esperado expressao
 
         } catch (SemanticError e) {
             int posErro = e.getPosition();

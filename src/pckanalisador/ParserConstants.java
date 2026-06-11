@@ -181,9 +181,15 @@ public interface ParserConstants
         "esperado ^",          // "Era esperado \"^\""
         
         "esperado main", // "<main> inválido",
-        "esperado id ask define if repeat tell", // "<opcional_main> inválido",        
-        "esperado id ask int string tell", // "<lista_instrucoes> inválido",
-        "esperado id ask end elif else int string tell until while", // "<lista_instrucoes_> inválido",
+//        "esperado id ask define if repeat tell", // "<opcional_main> inválido",    
+          "esperado identificador ask define if repeat tell", // "<opcional_main> inválido",    
+          
+        //"esperado id ask int string tell", // "<lista_instrucoes> inválido",
+                "esperado identificador ask if repeat tell", // "<lista_instrucoes> inválido",
+
+       // "esperado id ask end elif else int string tell until while", // "<lista_instrucoes_> inválido",
+       "esperado identificador ask end elif else if repeat tell until while", // "<lista_instrucoes_> inválido",
+
         "esperado id ask if repeat tell", // "<instrucao> inválido",
         "esperado define", // "<dec_variaveis> inválido",
         "esperado id", // "<lista_id> inválido",
@@ -194,15 +200,23 @@ public interface ParserConstants
         "esperado ask", // "<dec_entrada> inválido",
         "esperado id constante_string", // "<lista_entrada> inválido",
         "esperado , )", // "<lista_entrada_> inválido",
-        "esperado id constante_string", // "<opcional_atribuicao> inválido",
-        "esperado tell", // "<dec_saida> inválido",
+       // "esperado id constante_string", // "<opcional_atribuicao> inválido",
+               "esperado identificador constante_string", // "<opcional_atribuicao> inválido",
+
+       "esperado tell", // "<dec_saida> inválido",
         "esperado id constante_int constante_float constante_char constante_string false ( ! + -", // "<lista_expressao> inválido",
         "esperado , )", // "<lista_expressao_> inválido",
         "esperado if", // "<dec_selecao> inválido",
-        "esperado elif else false", // "<elif_selecao> inválido",
-        "esperado elif false", // "<opcional_selecao> inválido",
-        "esperado repeat", // "<dec_loop> inválido",
-        "esperado until while", // "<dec_loop_> inválido",
+//        "esperado elif else false", // "<elif_selecao> inválido",
+        "esperado elif else end", // "<elif_selecao> inválido",
+
+        //"esperado else false", // "<opcional_selecao> inválido",
+                "esperado else end", // "<opcional_selecao> inválido",
+
+      //  "esperado repeat", // "<dec_loop> inválido",
+              "esperado identificador ask bool char float if int string repeat tell", // "<dec_loop> inválido",
+  
+      "esperado until while", // "<dec_loop_> inválido",
         "esperado id ask bool char float int string tell", // "<repete> inválido",
         "esperado expressao", // "<expressao> inválido",
         "esperado expressao", // "<expressao_> inválido",
