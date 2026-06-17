@@ -1,6 +1,6 @@
 package pckanalisador;
 
-public class Semantico implements Constants
+public class Semantico_ implements Constants
 {
     public void executeAction(int action, Token token)	throws SemanticError
     {
