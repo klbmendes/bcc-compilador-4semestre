@@ -280,9 +280,11 @@ public class InterfaceCompilador extends JFrame {
             int posErro = e.getPosition();
             int linhaErro = posicaoParaLinha(fonte, posErro);
             String encontrado = encontrarTokenEncontrado(fonte, posErro);
-            mensagens.setText("linha " + linhaErro + ": encontrado " + encontrado + " " + e.getMessage());
+            mensagens.setText("linha " + linhaErro + ": encontrado " + encontrado + "esperado" + e.getMessage());
             mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
-//encontrado ... esperado expressao
+
+
+            //encontrado ... esperado expressao
 
         } catch (SemanticError e) {
             int posErro = e.getPosition();
