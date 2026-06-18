@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = Stream
+Input = String
 Parser = LL
 #RegularDefinitions
 
@@ -159,7 +159,7 @@ pr_while = id:"while"
 
 // <lista_expressao> ::= <expressao> | <expressao> "," <lista_expressao> ;
 <lista_expressao> ::= <expressao> #14 <lista_expressao_> ;
-<lista_expressao_> ::= î |  #14 "," <lista_expressao> ;
+<lista_expressao_> ::= î | "," <lista_expressao> ;
 
 <dec_selecao> ::=  pr_if <expressao> #27 <lista_instrucoes> <elif_selecao> #28 <opcional_selecao> pr_end #29 ;
 <elif_selecao> ::= î | #28 pr_elif <expressao> #30 <lista_instrucoes> <elif_selecao> ;

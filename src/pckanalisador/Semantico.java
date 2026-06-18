@@ -269,13 +269,36 @@ private void acao26(Token token){
    codigoObjeto.append("ldloc " + nome + "\n");
 }
 
-//acao 31
-/* private void acao31(Token token){
-   String tipo = pilhaTipos.pop();
-   String nome = token.getLexeme();
-   codigoObjeto.append("stloc " + nome + "\n");
-}
+//acao 27
+public void acao27(Token token){
+ /*  pilhaTipos.pop();
+      String rotulo1 = novoRotulo(); // rotulo apos o end
+      String rotulo2 = novoRotulo(); // rotulo do elif/else
+      pilhaRotulos.push(rotulo1);
+      pilhaRotulos.push(rotulo2);
+      codigoObjeto.append("brfalse " + rotulo2 + "\n");
 */
+}
+
+//acao 28
+public void acao28(Token token){
+}
+
+//acao 29
+public void acao29(Token token){
+}
+
+//acao 30
+public void acao30(Token token){}
+
+//acao 32
+public void acao32(Token token){}
+
+//acao 33
+public void acao33(Token token){}
+
+//acao 34
+public void acao34(Token token){}
 
    public String getCodigoObjeto() {
       return codigoObjeto.toString();
