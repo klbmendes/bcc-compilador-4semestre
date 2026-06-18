@@ -268,6 +268,15 @@ public class InterfaceCompilador extends JFrame {
             mensagens.setText("programa compilado com sucesso");
             mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
 
+            //salvar em il
+            if (arquivoAtual != null) {
+            String caminhoIL = arquivoAtual.getAbsolutePath().replace(".txt", ".il");
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(caminhoIL))) {
+                bw.write(semantico.getCodigoObjeto());
+            } catch (IOException ex) {
+                mensagens.setText("Erro ao salvar arquivo .il: " + ex.getMessage());
+            }
+        }
         } catch (LexicalError e) {
             int posErro = e.getPosition();
             int linhaErro = posicaoParaLinha(fonte, posErro);
