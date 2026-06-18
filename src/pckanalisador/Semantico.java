@@ -43,7 +43,7 @@ public class Semantico implements Constants {
          case 24: acao24(); break;  
          case 25: acao25(token); break;   
          case 26: acao26(token); break;
-         case 31: acao31(token); break;   
+//         case 31: acao31(token); break;   
 
          default:
                   throw new SemanticError("Acao semantica nao implementada: " + action);
@@ -270,11 +270,12 @@ private void acao26(Token token){
 }
 
 //acao 31
-private void acao31(Token token){
+/* private void acao31(Token token){
    String tipo = pilhaTipos.pop();
    String nome = token.getLexeme();
    codigoObjeto.append("stloc " + nome + "\n");
 }
+*/
 
    public String getCodigoObjeto() {
       return codigoObjeto.toString();
