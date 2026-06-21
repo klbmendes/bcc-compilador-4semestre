@@ -277,23 +277,17 @@ public class InterfaceCompilador extends JFrame {
                 mensagens.setText("Erro ao salvar arquivo .il: " + ex.getMessage());
             }
         }
-        } catch (LexicalError e) {
+         } catch (LexicalError e) {
             int posErro = e.getPosition();
             int linhaErro = posicaoParaLinha(fonte, posErro);
-            String simbolo = (posErro >= 0 && posErro < fonte.length())
-                    ? String.valueOf(fonte.charAt(posErro)) : "";
-            mensagens.setText(formatarErro(e.getMessage(), linhaErro, simbolo));
+            mensagens.setText("linha " + linhaErro + ": erro léxico");
             mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
 
         } catch (SyntaticError e) {
             int posErro = e.getPosition();
             int linhaErro = posicaoParaLinha(fonte, posErro);
-            String encontrado = encontrarTokenEncontrado(fonte, posErro);
-            mensagens.setText("linha " + linhaErro + ": encontrado " + encontrado + "esperado " + e.getMessage());
+            mensagens.setText("linha " + linhaErro + ": erro sintático");
             mensagens.setFont(new Font("Monospaced", Font.PLAIN, 12));
-
-
-            //encontrado ... esperado expressao
 
         } catch (SemanticError e) {
             int posErro = e.getPosition();
@@ -318,7 +312,7 @@ public class InterfaceCompilador extends JFrame {
                 }
             }
         } catch (LexicalError e) {
-            // erro léxico ao re-escanear: não deveria ocorrer aqui
+            // Se ocorrer um erro durante a leitura, retornamos o símbolo genérico
         }
         return "EOF";
     }

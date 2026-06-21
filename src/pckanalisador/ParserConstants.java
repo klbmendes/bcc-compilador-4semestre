@@ -1,6 +1,7 @@
 package pckanalisador;
 
-public interface ParserConstants{
+public interface ParserConstants
+{
     int START_SYMBOL = 46;
 
     int FIRST_NON_TERMINAL    = 46;
